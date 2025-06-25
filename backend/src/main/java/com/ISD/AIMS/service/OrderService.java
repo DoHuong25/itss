@@ -28,7 +28,6 @@ public class OrderService {
 
     @Transactional
     public Order createOrderFromCart(String vnpTxnRef) {
-        // Lấy giỏ hàng của người dùng hiện tại
         Cart cart = cartService.getCartForCurrentUser();
         if (cart.getItems().isEmpty()) {
             throw new IllegalStateException("Giỏ hàng đang trống");
@@ -36,7 +35,7 @@ public class OrderService {
 
         Order order = new Order();
         order.setUser(cart.getUser());
-        order.setVnpTxnRef(vnpTxnRef); // Lưu mã giao dịch để đối chiếu
+        order.setVnpTxnRef(vnpTxnRef);
 
         List<OrderItem> orderItems = cart.getItems().stream().map(cartItem -> {
             OrderItem orderItem = new OrderItem();
@@ -45,26 +44,29 @@ public class OrderService {
             orderItem.setPrice(cartItem.getProduct().getPrice());
             orderItem.setOrder(order);
 
-            // Cập nhật số lượng tồn kho của sản phẩm
             Product product = cartItem.getProduct();
+            // Cập nhật số lượng tồn kho
             int newQuantity = product.getQuantity() - cartItem.getQuantity();
             if (newQuantity < 0) {
                 throw new IllegalStateException("Không đủ hàng cho sản phẩm: " + product.getTitle());
             }
             product.setQuantity(newQuantity);
+            
+            // Tăng số lượt bán của sản phẩm lên
+            product.setSalesCount(product.getSalesCount() + cartItem.getQuantity());
+            
             productRepository.save(product);
 
             return orderItem;
         }).collect(Collectors.toList());
 
         order.setOrderItems(orderItems);
-        // Tính tổng giá trị đơn hàng
+        
         double totalPrice = orderItems.stream()
                 .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
         order.setTotalPrice(totalPrice);
         
-        // Xóa giỏ hàng sau khi đã tạo đơn hàng thành công
         cartRepository.delete(cart);
 
         return orderRepository.save(order);

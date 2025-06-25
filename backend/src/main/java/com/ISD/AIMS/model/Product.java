@@ -27,6 +27,7 @@ public abstract class Product {
     private double weight;
     private String dimensions;
     private String imageUrl;
+    private int salesCount = 0; // Thêm trường này
     // Getters & Setters
 
     public Long getId() { return id; }
@@ -60,4 +61,6 @@ public abstract class Product {
     public void setDimensions(String dimensions) { this.dimensions = dimensions; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public int getSalesCount() { return salesCount; }
+    public void setSalesCount(int salesCount) { this.salesCount = salesCount; }
 }

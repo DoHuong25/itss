@@ -30,7 +30,7 @@ public class CartItem {
      * Định nghĩa mối quan hệ Nhiều-Một (Many-to-One) giữa CartItem và Product.
      * Nhiều món hàng (có thể ở các giỏ hàng khác nhau) có thể là cùng một sản phẩm.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
