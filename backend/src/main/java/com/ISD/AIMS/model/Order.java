@@ -23,14 +23,26 @@ public class Order {
     private LocalDateTime orderDate;
     private String status;
     private double totalPrice;
-    private String vnpTxnRef; // SỬA Ở ĐÂY
+    private String vnpTxnRef;
+  
+    // --- THÊM 3 TRƯỜNG MỚI VÀO ĐÂY ---
+    @Column(name = "customer_name") // Tùy chọn: đặt tên cột trong DB
+    private String customerName;
+
+    @Column(name = "customer_phone")
+    private String customerPhone;
+
+    @Column(name = "shipping_address")
+    private String shippingAddress;
+    // --- KẾT THÚC PHẦN THÊM MỚI ---
+  
 
     public Order() {
         this.orderDate = LocalDateTime.now();
         this.status = "PENDING";
     }
 
-    // Getters and Setters
+    // --- Getters and Setters hiện có (giữ nguyên) ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public User getUser() { return user; }
@@ -43,8 +55,33 @@ public class Order {
     public void setStatus(String status) { this.status = status; }
     public double getTotalPrice() { return totalPrice; }
     public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
-    
-    // SỬA CẢ GETTER VÀ SETTER
     public String getVnpTxnRef() { return vnpTxnRef; }
     public void setVnpTxnRef(String vnpTxnRef) { this.vnpTxnRef = vnpTxnRef; }
+
+
+    // --- THÊM GETTERS VÀ SETTERS CHO 3 TRƯỜNG MỚI ---
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+    // --- KẾT THÚC PHẦN THÊM MỚI ---
 }

@@ -79,6 +79,11 @@ public class CartController {
         itemDto.setProductId(cartItem.getProduct().getId());
         itemDto.setProductTitle(cartItem.getProduct().getTitle());
         itemDto.setProductPrice(cartItem.getProduct().getPrice());
+        
+        // --- DÒNG QUAN TRỌNG NHẤT ĐƯỢC THÊM VÀO ĐÂY ---
+        // Lấy imageUrl từ Product và gán nó vào DTO để gửi về cho frontend.
+        itemDto.setImageUrl(cartItem.getProduct().getImageUrl());
+
         return itemDto;
     }
 }

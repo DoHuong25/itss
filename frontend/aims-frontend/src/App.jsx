@@ -8,6 +8,7 @@ import CartPage from './pages/CartPage';
 import RegisterPage from './pages/RegisterPage';
 import PaymentSuccessPage from './pages/PaymentSuccessPage';
 import PaymentFailedPage from './pages/PaymentFailedPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 function App() {
   return (
     <Routes>
@@ -19,6 +20,7 @@ function App() {
         <Route path="register" element={<RegisterPage />} />
         <Route path="payment-success" element={<PaymentSuccessPage />} />
         <Route path="payment-failed" element={<PaymentFailedPage />} />
+         <Route path="order-history" element={<OrderHistoryPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

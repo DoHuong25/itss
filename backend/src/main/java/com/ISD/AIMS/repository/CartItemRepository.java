@@ -1,19 +1,17 @@
 package com.ISD.AIMS.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.ISD.AIMS.model.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.ISD.AIMS.model.CartItem;
+import java.util.Optional; // <-- Thêm import này
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
+    // --- THÊM DÒNG NÀY VÀO ---
+    // Khai báo phương thức để Spring Data JPA tự động tạo câu lệnh
+    // tìm một CartItem dựa trên cartId VÀ productId.
+    // Sử dụng Optional để xử lý trường hợp không tìm thấy một cách an toàn.
     Optional<CartItem> findByCartIdAndProductId(Long cartId, Long productId);
-
-    // Tìm và trả về tất cả CartItem thuộc về một giỏ hàng cụ thể.
-    List<CartItem> findAllByCartId(Long cartId);
 }
-

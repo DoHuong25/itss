@@ -44,6 +44,7 @@ function Header() {
         {/* === THAY ĐỔI Ở ĐÂY === */}
         {user ? (
           <>
+          <Link to="/order-history" style={{ marginRight: '15px' }}>Lịch sử mua hàng</Link>
             <span style={{ marginRight: '1rem' }}>Chào, {user.username}</span>
             <button onClick={logout}>Đăng xuất</button>
           </>

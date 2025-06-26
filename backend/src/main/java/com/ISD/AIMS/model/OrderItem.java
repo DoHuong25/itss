@@ -19,7 +19,15 @@ public class OrderItem {
     private Product product;
 
     private int quantity;
-    private double price; // Lưu lại giá của sản phẩm tại thời điểm mua
+    private double price;
+
+    private String status; // <-- THÊM THUỘC TÍNH NÀY
+
+    @PrePersist
+    public void prePersist() {
+        // Đặt trạng thái mặc định cho sản phẩm khi đơn hàng được tạo
+        this.status = "DELIVERED"; 
+    }
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -36,4 +44,7 @@ public class OrderItem {
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
+    
+    public String getStatus() { return status; } // <-- THÊM GETTER/SETTER NÀY
+    public void setStatus(String status) { this.status = status; }
 }

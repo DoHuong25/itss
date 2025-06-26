@@ -1,15 +1,12 @@
 package com.ISD.AIMS.dto;
 
-/**
- * DTO này dùng để biểu diễn một món hàng trong giỏ khi trả về cho client.
- * Chỉ chứa các thông tin cần thiết để hiển thị.
- */
 public class CartItemDto {
     private Long id;
     private int quantity;
     private Long productId;
     private String productTitle;
     private double productPrice;
+    private String imageUrl; // <-- BẮT BUỘC PHẢI CÓ DÒNG NÀY
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -26,4 +23,7 @@ public class CartItemDto {
 
     public double getProductPrice() { return productPrice; }
     public void setProductPrice(double productPrice) { this.productPrice = productPrice; }
+
+    public String getImageUrl() { return imageUrl; } // <-- BẮT BUỘC PHẢI CÓ GETTER
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; } // <-- BẮT BUỘC PHẢI CÓ SETTER
 }

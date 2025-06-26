@@ -28,7 +28,6 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // === BEAN QUAN TRỌNG BỊ THIẾU ĐÃ ĐƯỢC THÊM LẠI ===
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -43,8 +42,10 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -52,14 +53,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults())
+        http
+            .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // === CẤU HÌNH LẠI CÁC QUY TẮC BẢO MẬT ===
-                .requestMatchers(
-                    "/api/auth/**", 
-                    "/api/payment/**"
-                ).permitAll()
+                // --- CÁC ENDPOINT CÔNG KHAI, KHÔNG CẦN ĐĂNG NHẬP ---
+                .requestMatchers("/api/auth/**").permitAll() // Cho phép đăng nhập, đăng ký
+                
+                // **DÒNG SỬA LỖI QUAN TRỌNG NHẤT**
+                // Cho phép VNPAY gọi về mà không cần xác thực
+                .requestMatchers("/api/payment/vnpay-return").permitAll() 
+                
+                // Cho phép xem sản phẩm mà không cần đăng nhập
                 .requestMatchers(HttpMethod.GET, 
                     "/api/products/**", 
                     "/api/books/**", 
@@ -67,7 +72,11 @@ public class SecurityConfig {
                     "/api/dvds/**", 
                     "/api/lps/**"
                 ).permitAll()
+
+                // --- CÁC ENDPOINT YÊU CẦU QUYỀN ---
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                // Tất cả các request còn lại đều yêu cầu phải đăng nhập
                 .anyRequest().authenticated()
             )
             .sessionManagement(session ->
