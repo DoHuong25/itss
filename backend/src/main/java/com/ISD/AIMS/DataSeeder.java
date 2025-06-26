@@ -2,27 +2,70 @@ package com.ISD.AIMS;
 
 import com.ISD.AIMS.model.Book;
 import com.ISD.AIMS.model.CD;
+import com.ISD.AIMS.model.User;
 import com.ISD.AIMS.repository.BookRepository;
 import com.ISD.AIMS.repository.CDRepository;
+import com.ISD.AIMS.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDate;
+import java.util.Set;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
 
+    // --- Repositories cho Sản phẩm ---
     @Autowired
     private BookRepository bookRepository;
 
     @Autowired
     private CDRepository cdRepository;
 
+    // --- Repositories và Services cho User ---
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
-        // Chỉ thêm dữ liệu nếu kho lưu trữ sách và CD đều trống
+        // --- Phần 1: Tạo tài khoản Admin ---
+        seedAdminUser();
+
+        // --- Phần 2: Tạo dữ liệu sản phẩm mẫu ---
+        seedProducts();
+    }
+
+    /**
+     * Phương thức để tạo tài khoản admin nếu nó chưa tồn tại.
+     */
+    private void seedAdminUser() {
+        if (userRepository.findByUsername("admin").isEmpty()) {
+            System.out.println("Creating admin user...");
+
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRoles(Set.of("ADMIN", "USER"));
+            admin.setEnabled(true);
+            
+            userRepository.save(admin);
+            System.out.println("Admin user created successfully!");
+        } else {
+            System.out.println("Admin user already exists.");
+        }
+    }
+
+    /**
+     * Phương thức để tạo dữ liệu sản phẩm mẫu nếu database trống.
+     */
+    private void seedProducts() {
         if (bookRepository.count() == 0 && cdRepository.count() == 0) {
-            System.out.println("No data found. Seeding initial data...");
+            System.out.println("No product data found. Seeding initial products...");
 
             // --- Tạo Sách (Book) ---
             Book book1 = new Book();
@@ -69,8 +112,9 @@ public class DataSeeder implements CommandLineRunner {
             cd1.setDescription("Album tổng hợp những ca khúc hay nhất của ban nhạc ABBA huyền thoại.");
             cdRepository.save(cd1);
 
-            
-            System.out.println("Initial data seeded.");
+            System.out.println("Initial product data seeded.");
+        } else {
+            System.out.println("Product data already exists.");
         }
     }
 }

@@ -1,12 +1,10 @@
 package com.ISD.AIMS.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.ISD.AIMS.dto.UserDto;
+import com.ISD.AIMS.model.User;
+import com.ISD.AIMS.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy; // 1. Thêm import @Lazy
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,21 +12,29 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ISD.AIMS.model.User;
-import com.ISD.AIMS.repository.UserRepository;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService { 
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 2. [THAY ĐỔI QUAN TRỌNG]
+     * Thêm @Lazy vào PasswordEncoder để phá vỡ vòng lặp tham chiếu.
+     * Spring sẽ không tạo PasswordEncoder ngay lập tức, mà chỉ khi nó thực sự được dùng.
+     */
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
@@ -44,7 +50,6 @@ public class UserService implements UserDetailsService {
                 authorities
         );
     }
-
 
     public boolean register(String username, String rawPassword, Set<String> roles) {
         if (userRepository.existsByUsername(username)) {
@@ -99,5 +104,19 @@ public class UserService implements UserDetailsService {
             user.setRoles(roles);
             userRepository.save(user);
         });
+    }
+
+    public List<UserDto> findAllUsersForAdmin() {
+        return userRepository.findAll().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private UserDto convertToDto(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getRoles()
+        );
     }
 }

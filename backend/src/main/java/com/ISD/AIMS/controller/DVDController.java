@@ -36,17 +36,12 @@ public class DVDController {
         Optional<DVD> existing = dvdService.getDVDById(id);
         if (existing.isPresent()) {
             DVD dvd = existing.get();
+            // [SỬA LỖI] Chỉ cập nhật các trường có trên form quản trị
             dvd.setTitle(updatedDVD.getTitle());
-            dvd.setCategory(updatedDVD.getCategory());
-            dvd.setValue(updatedDVD.getValue());
             dvd.setPrice(updatedDVD.getPrice());
-            dvd.setBarcode(updatedDVD.getBarcode());
-            dvd.setDescription(updatedDVD.getDescription());
             dvd.setQuantity(updatedDVD.getQuantity());
-            dvd.setWeight(updatedDVD.getWeight());
-            dvd.setDimensions(updatedDVD.getDimensions());
             dvd.setImageUrl(updatedDVD.getImageUrl());
-
+            dvd.setDescription(updatedDVD.getDescription());
             dvd.setDirector(updatedDVD.getDirector());
             dvd.setStudio(updatedDVD.getStudio());
             dvd.setDiscType(updatedDVD.getDiscType());
@@ -55,6 +50,7 @@ public class DVDController {
             dvd.setLanguage(updatedDVD.getLanguage());
             dvd.setSubtitles(updatedDVD.getSubtitles());
             dvd.setReleaseDate(updatedDVD.getReleaseDate());
+            // Các trường như barcode, value, weight... sẽ được giữ nguyên
             return dvdService.saveDVD(dvd);
         } else {
             return null;
