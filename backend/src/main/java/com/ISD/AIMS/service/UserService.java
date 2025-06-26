@@ -18,6 +18,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.ISD.AIMS.dto.UserDto;
+import com.ISD.AIMS.model.User;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -116,7 +119,8 @@ public class UserService implements UserDetailsService {
         return new UserDto(
                 user.getId(),
                 user.getUsername(),
-                user.getRoles()
+                user.getRoles(),
+                user.isEnabled()
         );
     }
 }

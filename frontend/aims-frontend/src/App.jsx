@@ -21,6 +21,8 @@ import NotFoundPage from './pages/NotFoundPage';
 // --- Admin Pages ---
 import ProductManagement from './pages/admin/ProductManagement';
 import UserManagement from './pages/admin/UserManagement';
+// --- DÒNG ĐƯỢC THÊM VÀO ---
+import OrderManagement from './pages/admin/OrderManagement';
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
           {/* Các trang con của dashboard admin */}
           <Route path="products" element={<ProductManagement />} />
           <Route path="users" element={<UserManagement />} />
+          {/* --- DÒNG ĐƯỢC THÊM VÀO --- */}
+          <Route path="orders" element={<OrderManagement />} />
         </Route>
       </Route>
 

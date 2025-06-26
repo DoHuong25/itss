@@ -2,47 +2,33 @@ package com.ISD.AIMS.dto;
 
 import java.util.Set;
 
-/**
- * Data Transfer Object for User information.
- * Used to safely transfer user data to the frontend without exposing sensitive information like passwords.
- */
 public class UserDto {
     private Long id;
     private String username;
     private Set<String> roles;
+    private boolean enabled; // <-- THÊM DÒNG NÀY
 
     // Constructors
     public UserDto() {
     }
 
-    public UserDto(Long id, String username, Set<String> roles) {
+    // Cập nhật constructor để bao gồm 'enabled'
+    public UserDto(Long id, String username, Set<String> roles, boolean enabled) { // <-- SỬA DÒNG NÀY
         this.id = id;
         this.username = username;
         this.roles = roles;
+        this.enabled = enabled; // <-- THÊM DÒNG NÀY
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    // Getters and Setters (giữ nguyên các getter/setter cũ)
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public Set<String> getRoles() { return roles; }
+    public void setRoles(Set<String> roles) { this.roles = roles; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
+    // THÊM GETTER/SETTER CHO TRƯỜNG MỚI
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }

@@ -3,23 +3,70 @@ import apiClient from '../../services/api';
 
 // --- Styles ---
 const styles = {
-    container: { fontFamily: 'Arial, sans-serif', margin: '20px' },
+    container: {
+        fontFamily: 'Arial, sans-serif',
+        padding: '10px',
+        width: '100%',
+        boxSizing: 'border-box',
+    },
     header: { fontSize: '24px', marginBottom: '20px' },
-    formContainer: { padding: '20px', border: '1px solid #ccc', borderRadius: '5px', marginBottom: '20px', backgroundColor: 'white' },
-    formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' },
-    table: { width: '100%', borderCollapse: 'collapse', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', backgroundColor: 'white' },
-    th: { borderBottom: '2px solid #ddd', padding: '12px', backgroundColor: '#f8f9fa', textAlign: 'left' },
+    formContainer: {
+        padding: '20px',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        marginBottom: '20px',
+        backgroundColor: 'white',
+        maxWidth: '100%',
+        overflowX: 'auto'
+    },
+    formGrid: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '0 20px',
+    },
+    table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        backgroundColor: 'white',
+        maxWidth: '100%',
+        overflowX: 'auto',
+    },
+    th: {
+        borderBottom: '2px solid #ddd',
+        padding: '12px',
+        backgroundColor: '#f8f9fa',
+        textAlign: 'left'
+    },
     td: { borderBottom: '1px solid #ddd', padding: '12px' },
-    input: { width: '100%', padding: '8px', marginBottom: '10px', boxSizing: 'border-box' },
-    textarea: { width: '100%', padding: '8px', marginBottom: '10px', boxSizing: 'border-box', minHeight: '80px' },
-    button: { padding: '6px 12px', margin: '0 4px', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' },
+    input: {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '10px',
+        boxSizing: 'border-box'
+    },
+    textarea: {
+        width: '100%',
+        padding: '8px',
+        marginBottom: '10px',
+        boxSizing: 'border-box',
+        minHeight: '80px'
+    },
+    button: {
+        padding: '6px 12px',
+        margin: '0 4px',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        color: 'white'
+    },
     submitButton: { backgroundColor: '#007bff' },
     editButton: { backgroundColor: '#ffc107' },
     deleteButton: { backgroundColor: '#dc3545' },
     cancelButton: { backgroundColor: '#6c757d' },
 };
 
-// Hàm khởi tạo state cho form với tất cả các trường có thể có
+// --- Form initial state ---
 const initialFormState = {
     title: '', price: '', quantity: '', category: 'Book', imageUrl: '', description: '',
     authors: '', coverType: '', publisher: '', publicationDate: '', numberOfPages: '', language: '',
@@ -91,7 +138,6 @@ const ProductManagement = () => {
         const method = isEditing ? 'put' : 'post';
 
         let endpoint = '';
-        // [SỬA LỖI] Tạo một đối tượng mới từ form state để tránh gửi các trường không cần thiết
         let formData = {
             title: formState.title,
             price: parseFloat(formState.price),
@@ -105,19 +151,48 @@ const ProductManagement = () => {
         switch (formState.category) {
             case 'Book':
                 endpoint = `/books${isEditing ? `/${editingProduct.id}` : ''}`;
-                formData = { ...formData, authors: formState.authors, coverType: formState.coverType, publisher: formState.publisher, publicationDate: formState.publicationDate, numberOfPages: parseInt(formState.numberOfPages, 10) || 0, language: formState.language };
+                formData = {
+                    ...formData,
+                    authors: formState.authors,
+                    coverType: formState.coverType,
+                    publisher: formState.publisher,
+                    publicationDate: formState.publicationDate,
+                    numberOfPages: parseInt(formState.numberOfPages, 10) || 0,
+                    language: formState.language
+                };
                 break;
             case 'CD':
                 endpoint = `/cds${isEditing ? `/${editingProduct.id}` : ''}`;
-                formData = { ...formData, artist: formState.artist, recordLabel: formState.recordLabel, tracklist: formState.tracklist, releaseDate: formState.releaseDate };
+                formData = {
+                    ...formData,
+                    artist: formState.artist,
+                    recordLabel: formState.recordLabel,
+                    tracklist: formState.tracklist,
+                    releaseDate: formState.releaseDate
+                };
                 break;
             case 'DVD':
                 endpoint = `/dvds${isEditing ? `/${editingProduct.id}` : ''}`;
-                formData = { ...formData, discType: formState.discType, director: formState.director, runtime: parseInt(formState.runtime, 10) || 0, studio: formState.studio, subtitles: formState.subtitles, releaseDate: formState.releaseDate, language: formState.language };
+                formData = {
+                    ...formData,
+                    discType: formState.discType,
+                    director: formState.director,
+                    runtime: parseInt(formState.runtime, 10) || 0,
+                    studio: formState.studio,
+                    subtitles: formState.subtitles,
+                    releaseDate: formState.releaseDate,
+                    language: formState.language
+                };
                 break;
             case 'LP':
                 endpoint = `/lps${isEditing ? `/${editingProduct.id}` : ''}`;
-                formData = { ...formData, artist: formState.artist, recordLabel: formState.recordLabel, tracklist: formState.tracklist, releaseDate: formState.releaseDate };
+                formData = {
+                    ...formData,
+                    artist: formState.artist,
+                    recordLabel: formState.recordLabel,
+                    tracklist: formState.tracklist,
+                    releaseDate: formState.releaseDate
+                };
                 break;
             default:
                 setError('Loại sản phẩm không hợp lệ.');
@@ -125,9 +200,6 @@ const ProductManagement = () => {
                 return;
         }
 
-        // [SỬA LỖI QUAN TRỌNG NHẤT]
-        // Nếu đang sửa, hãy kết hợp dữ liệu gốc với dữ liệu mới từ form
-        // để không làm mất các trường không có trên form (barcode, value, weight...)
         const dataToSend = isEditing ? { ...editingProduct, ...formData } : formData;
 
         try {
@@ -153,10 +225,6 @@ const ProductManagement = () => {
             }
         }
     };
-
-    if (loading && products.length === 0) {
-        return <div style={styles.container}>Đang tải danh sách sản phẩm...</div>
-    }
 
     const renderSpecificFields = () => {
         switch (formState.category) {
@@ -209,7 +277,6 @@ const ProductManagement = () => {
                 <h2>{editingProduct ? `Sửa sản phẩm: ${editingProduct.title}` : 'Thêm sản phẩm mới'}</h2>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.formGrid}>
-                        {/* Cột 1 - Các trường chung */}
                         <div>
                             <label>Loại sản phẩm</label>
                             <select name="category" value={formState.category} onChange={handleInputChange} style={styles.input} disabled={!!editingProduct}>
@@ -225,11 +292,7 @@ const ProductManagement = () => {
                             <label>URL Hình ảnh</label><input name="imageUrl" type="text" value={formState.imageUrl} onChange={handleInputChange} style={styles.input} />
                             <label>Mô tả</label><textarea name="description" value={formState.description} onChange={handleInputChange} style={styles.textarea} />
                         </div>
-
-                        {/* Cột 2 - Các trường riêng */}
-                        <div>
-                            {renderSpecificFields()}
-                        </div>
+                        <div>{renderSpecificFields()}</div>
                     </div>
 
                     <button type="submit" disabled={loading} style={{ ...styles.button, ...styles.submitButton, marginTop: '10px' }}>
@@ -242,6 +305,7 @@ const ProductManagement = () => {
                     )}
                 </form>
             </div>
+
             {error && <p style={{ color: 'red' }}>{error}</p>}
 
             <h2>Danh sách sản phẩm</h2>
