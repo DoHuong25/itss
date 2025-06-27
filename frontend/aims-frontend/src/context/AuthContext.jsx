@@ -1,65 +1,70 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import apiClient from '../services/api';
-import { useCart } from './CartContext'; // Import useCart để tải lại giỏ hàng
+import { useCart } from './CartContext';
+import { jwtDecode } from 'jwt-decode'; // Import thư viện giải mã
 
-// 1. Tạo Context
 const AuthContext = createContext();
 
-// 2. Tạo Provider
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('token')); // Lấy token từ localStorage khi tải
-  const { fetchCart, clearCart } = useCart(); // Lấy thêm hàm clearCart
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const { fetchCart, clearCart } = useCart();
 
-  // Tự động lấy thông tin user nếu có token
+  // Giữ nguyên logic useEffect của bạn để lấy user từ localStorage
   useEffect(() => {
     if (token) {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
-      // Trong ứng dụng thực tế, bạn nên có một API /me để xác thực token và lấy lại thông tin user
     }
   }, [token]);
 
-  // Hàm Đăng nhập
+  // Hàm Đăng nhập được cập nhật
   const login = async (username, password) => {
     try {
       const response = await apiClient.post('/auth/login', { username, password });
-      const { token, ...userData } = response.data;
 
+      // Giữ nguyên hoàn toàn logic lưu trữ của bạn
+      const { token, ...userData } = response.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
-
       setToken(token);
       setUser(userData);
 
-      await fetchCart(); // Tải lại giỏ hàng của người dùng vừa đăng nhập
-      return { success: true };
+      await fetchCart();
+
+      // **CHỈ THÊM PHẦN NÀY**
+      // Giải mã token để lấy vai trò và trả về cho LoginPage
+      const decodedToken = jwtDecode(token);
+      const roles = decodedToken.roles || [];
+
+      return { success: true, roles: roles };
+
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
       return { success: false, message: error.response?.data || "Tên đăng nhập hoặc mật khẩu không đúng." };
     }
   };
 
-  // Hàm Đăng ký
+  // Giữ nguyên hàm register
   const register = async (username, password) => {
     try {
-        await apiClient.post('/auth/register', { username, password, roles: ["USER"] });
-        return { success: true };
+      await apiClient.post('/auth/register', { username, password, roles: ["USER"] });
+      return { success: true };
     } catch (error) {
-        console.error("Lỗi đăng ký:", error);
-        return { success: false, message: error.response?.data || "Tên đăng nhập đã tồn tại." };
+      console.error("Lỗi đăng ký:", error);
+      return { success: false, message: error.response?.data || "Tên đăng nhập đã tồn tại." };
     }
   };
 
-  // Hàm Đăng xuất
+  // Giữ nguyên hàm logout
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setToken(null);
     setUser(null);
-    clearCart(); // Xóa giỏ hàng khi đăng xuất
+    clearCart();
   };
 
   const value = { user, token, login, logout, register };
@@ -67,7 +72,6 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// 3. Tạo custom Hook
 export const useAuth = () => {
   return useContext(AuthContext);
 };

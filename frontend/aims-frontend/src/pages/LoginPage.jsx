@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 
-// --- CSS Styles ---
+// --- CSS Styles --- (Giữ nguyên)
 const pageStyles = {
   display: 'flex',
   justifyContent: 'center',
@@ -47,14 +47,26 @@ function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+
+  // Xác định trang trước đó, nếu không có thì mặc định là trang sản phẩm
+  const from = location.state?.from?.pathname || "/products";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     const result = await login(username, password);
+
     if (result.success) {
-      navigate(from, { replace: true });
+      // Lấy vai trò từ kết quả trả về
+      const userRoles = result.roles || [];
+
+      // Phân quyền điều hướng
+      if (userRoles.includes('ROLE_ADMIN')) {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        // User thường sẽ được điều hướng về trang họ đang ở trước đó
+        navigate(from, { replace: true });
+      }
     } else {
       setError(result.message || 'Tên đăng nhập hoặc mật khẩu không đúng.');
     }
@@ -68,20 +80,20 @@ function LoginPage() {
           <label style={labelStyles}>Tên đăng nhập:</label>
           <input
             style={inputStyles}
-            type="text" 
-            value={username} 
-            onChange={(e) => setUsername(e.target.value)} 
-            required 
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </div>
         <div style={inputGroupStyles}>
           <label style={labelStyles}>Mật khẩu:</label>
-          <input 
+          <input
             style={inputStyles}
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
         {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}

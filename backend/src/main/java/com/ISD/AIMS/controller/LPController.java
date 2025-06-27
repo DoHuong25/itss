@@ -36,23 +36,18 @@ public class LPController {
         Optional<LP> existing = lpService.getLPById(id);
         if (existing.isPresent()) {
             LP lp = existing.get();
+            // [SỬA LỖI] Chỉ cập nhật các trường có trên form quản trị
             lp.setTitle(updatedLP.getTitle());
-            lp.setCategory(updatedLP.getCategory());
-            lp.setValue(updatedLP.getValue());
             lp.setPrice(updatedLP.getPrice());
-            lp.setBarcode(updatedLP.getBarcode());
-            lp.setDescription(updatedLP.getDescription());
             lp.setQuantity(updatedLP.getQuantity());
-            lp.setWeight(updatedLP.getWeight());
-            lp.setDimensions(updatedLP.getDimensions());
             lp.setImageUrl(updatedLP.getImageUrl());
-
+            lp.setDescription(updatedLP.getDescription());
             lp.setArtist(updatedLP.getArtist());
             lp.setRecordLabel(updatedLP.getRecordLabel());
             lp.setTracklist(updatedLP.getTracklist());
             lp.setGenre(updatedLP.getGenre());
             lp.setReleaseDate(updatedLP.getReleaseDate());
-
+            // Các trường như barcode, value, weight... sẽ được giữ nguyên
             return lpService.saveLP(lp);
         } else {
             return null;

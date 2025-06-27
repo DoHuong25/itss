@@ -36,17 +36,12 @@ public class BookController {
         Optional<Book> existing = bookService.getBookById(id);
         if (existing.isPresent()) {
             Book book = existing.get();
+            // [SỬA LỖI] Chỉ cập nhật các trường có trên form quản trị
             book.setTitle(updatedBook.getTitle());
-            book.setCategory(updatedBook.getCategory());
-            book.setValue(updatedBook.getValue());
             book.setPrice(updatedBook.getPrice());
-            book.setBarcode(updatedBook.getBarcode());
-            book.setDescription(updatedBook.getDescription());
             book.setQuantity(updatedBook.getQuantity());
-            book.setWeight(updatedBook.getWeight());
-            book.setDimensions(updatedBook.getDimensions());
             book.setImageUrl(updatedBook.getImageUrl());
-
+            book.setDescription(updatedBook.getDescription());
             book.setAuthors(updatedBook.getAuthors());
             book.setCoverType(updatedBook.getCoverType());
             book.setPublisher(updatedBook.getPublisher());
@@ -54,6 +49,7 @@ public class BookController {
             book.setNumberOfPages(updatedBook.getNumberOfPages());
             book.setLanguage(updatedBook.getLanguage());
             book.setGenre(updatedBook.getGenre());
+            // Các trường như barcode, value, weight... sẽ được giữ nguyên
             return bookService.saveBook(book);
         } else {
             return null;
